@@ -1,15 +1,4 @@
-<% @facade.repo_name.each do |element| %>
-<% if element.name == "little-esty-shop" %>
-  <h4>Github repo: <%= element.name %></h4>
-  <% end %>
-<% end %>
 
-<p><strong>Contributors:</strong></p>
-<% @facade.contributor_pull_requests.each_pair do |name, count| %>
-<ul>
-  <li><%= name %>, <%= count %> pull requests</li>
-</ul>
-<% end %>
 <h1>Admin Dashboard</h1>
 
 
