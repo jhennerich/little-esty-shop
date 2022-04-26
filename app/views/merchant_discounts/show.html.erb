@@ -1,6 +1,6 @@
 <h2>Discount Information</h2>
-<%= button_to "Edit Discount", "/merchants/#{@merchant.id}/bulk_discounts/#{@merchant.find_discount(params[:id]).id}/edit", method: :get%>
+<%= button_to "Edit Discount", "/merchants/#{@merchant.id}/bulk_discounts/#{@merchant.find_discount(params[:id]).id}/edit/", method: :get%>
 <ul>
   <li>Discount: <%= @merchant.find_discount(params[:id]).discount %>% off item's unit price</li>
-  <li>Threshold: <%= @merchant.find_discount(params[:id]).threshold %> or more items</li>
+  <li>Threshold: <%= @merchant.find_discount(params[:id]).threshold %> or more items </li>
 </ul>

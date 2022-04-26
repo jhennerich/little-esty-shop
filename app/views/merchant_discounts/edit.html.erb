@@ -1,0 +1,9 @@
+<h2>Update a Discount</h2>
+
+<%= form_with url: "/merchants/#{params[:merchant_id]}/bulk_discounts/#{params[:id]}", method: :patch do |f| %>
+  <%= f.label "percent (%) to discount from unit_price" %>
+  <%= f.number_field :discount, in: 0.00..100.00, step: 0.05, value: @merchant.find_discount(params[:id]).discount %></br>
+  <%= f.label "minimum discount threshold" %>
+  <%= f.number_field :threshold, step: 1 , value: @merchant.find_discount(params[:id]).threshold%></br>
+  <%= f.submit "Update Discount"%>
+<% end %>
