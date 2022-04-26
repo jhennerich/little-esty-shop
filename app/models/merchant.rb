@@ -41,7 +41,7 @@ class Merchant < ApplicationRecord
 
   def best_date_formatted
     if best_date_by_revenue.values.first != 0
-      return best_date_by_revenue.keys.first.strftime("%A, %B %d %Y")
+      return Time.parse(best_date_by_revenue.keys.first).strftime("%A, %B %d %Y")
     else
       return "No sales data"
     end

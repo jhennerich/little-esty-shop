@@ -116,6 +116,37 @@ RSpec.describe Merchant, type: :model do
       actual = merchant_3.best_date_by_revenue
       expect(actual).to eq({"2020.05.07" => 900})
     end
+
+    it "#best_date_formatted" do
+      merchant_3 = Merchant.create!(name: "Le Petit Marchet")
+
+      item_1 = merchant_3.items.create!(name: "paper towel", description: "6 pk extra adsorpbant", status: 1, unit_price: 899)
+      item_2 = merchant_3.items.create!(name: "paper towel", description: "12 pk extra adsorpbant", status: 1, unit_price: 1099)
+      item_3 = merchant_3.items.create!(name: "paper towel", description: "single extra adsorpbant", status: 1, unit_price: 299)
+      item_4 = merchant_3.items.create!(name: "disposible napkins", description: "1000 ct pre-folded unbleached", status: 1, unit_price: 1099)
+
+      customer_1 = Customer.create!(first_name:"Markus", last_name: "Vance")
+
+      invoice_1 = customer_1.invoices.create!(status: 1, created_at: Time.parse("2020.05.06"))
+      invoice_2 = customer_1.invoices.create!(status: 1, created_at: Time.parse("2020.05.07"))
+      invoice_3 = customer_1.invoices.create!(status: 1, created_at: Time.parse("2020.05.07"))
+      invoice_4 = customer_1.invoices.create!(status: 1, created_at: Time.parse("2020.05.08"))
+
+      expect(merchant_3.best_date_formatted).to eq("No sales data")
+
+      invoice_item_1 = InvoiceItem.create!(invoice_id: invoice_1.id, item_id: item_1.id, quantity: 7, unit_price: 100, status: 0)
+      invoice_item_2 = InvoiceItem.create!(invoice_id: invoice_2.id, item_id: item_2.id, quantity: 5, unit_price: 100, status: 1)
+      invoice_item_3 = InvoiceItem.create!(invoice_id: invoice_3.id, item_id: item_3.id, quantity: 4, unit_price: 100, status: 2)
+      invoice_item_4 = InvoiceItem.create!(invoice_id: invoice_4.id, item_id: item_4.id, quantity: 10, unit_price: 100, status: 2) # Highest grossing day but no successful transactions
+
+      transaction_1 = invoice_1.transactions.create!(credit_card_number: 123456, result: "success")
+      transaction_2 = invoice_2.transactions.create!(credit_card_number: 223456, result: "success")
+      transaction_3 = invoice_2.transactions.create!(credit_card_number: 323456, result: "failed")
+      transaction_4 = invoice_3.transactions.create!(credit_card_number: 323456, result: "success")
+      transaction_5 = invoice_4.transactions.create!(credit_card_number: 423456, result: "failed")
+
+      expect(merchant_3.best_date_formatted).to eq("Thursday, May 07 2020")
+    end
   end
 
   describe 'class methods' do
