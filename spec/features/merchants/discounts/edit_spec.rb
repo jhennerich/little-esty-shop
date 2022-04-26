@@ -24,4 +24,16 @@ RSpec.describe 'Merchants discounts edit' do
     expect(page).to have_content("Threshold: 20 or more items")
   end
 
+  it "shows a flash notice if updated without all fields" do
+    merchant_1 = Merchant.create!(name: "General Paper Inc")
+    discount_1 = merchant_1.bulk_discounts.create!(threshold: 12, discount: 5.0)
+    discount_2 = merchant_1.bulk_discounts.create!(threshold: 50, discount: 10.0)
+
+    visit "/merchants/#{merchant_1.id}/bulk_discounts/#{discount_1.id}/edit"
+
+    fill_in :discount, with: nil
+    click_on "Update Discount"
+    expect(page).to have_content("Discount not updated: at least one missing field required")
+  end
+
 end
