@@ -22,7 +22,7 @@ RSpec.describe "merchants discounts index page" do
 
     visit "/merchants/#{merchant_1.id}/bulk_discounts/"
     within("#merchant-discounts-index-discount-#{discount_1.id}") do
-      click_on "Remove Discount"
+      click_on "Delete Discount"
     end
     expect(current_path).to eq("/merchants/#{merchant_1.id}/bulk_discounts/")
     expect(page).not_to have_content("5.0% when a customer buys 12 or more items")
