@@ -57,52 +57,83 @@ RSpec.describe Merchant, type: :model do
       expect(expected_collection.pluck(:name).include?(item_2.name)).to eq(true)
     end
 
-    describe 'class methods' do
-      before :each do
-        @merchant1 = Merchant.create!(name: "Pabu")
-        @merchant2 = Merchant.create!(name: "Loki")
-        @merchant3 = Merchant.create!(name: "Thor")
-        @merchant4 = Merchant.create!(name: "Ian")
-        @merchant5 = Merchant.create!(name: "Joe")
-        @merchant6 = Merchant.create!(name: "John")
+    it "#total_rev returns the all-time total revenue for a merchant" do
+      merchant_3 = Merchant.create!(name: "Le Petit Marchet")
 
-        @item1 = @merchant1.items.create!(name: "Comic", description: "Spider-Man", unit_price: 200, status: 1)
-        @item2 = @merchant2.items.create!(name: "Action figure", description: "Deku", unit_price: 800, status: 1)
-        @item3 = @merchant2.items.create!(name: "One Piece", description: "Rare", unit_price: 500, status: 1)
-        @item4 = @merchant3.items.create!(name: "Hunter card", description: "Useful", unit_price: 300, status: 1)
-        @item5 = @merchant4.items.create!(name: "Kunai", description: "Minatos", unit_price: 100, status: 1)
-        @item6 = @merchant5.items.create!(name: "ODM gear", description: "Advance technology", unit_price: 300, status: 1)
-        @item7 = @merchant5.items.create!(name: "Zenitsu", description: "Awsome sword", unit_price: 500, status: 1)
-        @item8 = @merchant6.items.create!(name: "Elucidator", description: "Kiritos sword", unit_price: 10, status: 1)
+      item_1 = merchant_3.items.create!(name: "paper towel", description: "6 pk extra adsorpbant", status: 1, unit_price: 899)
+      item_2 = merchant_3.items.create!(name: "paper towel", description: "12 pk extra adsorpbant", status: 1, unit_price: 1099)
+      item_3 = merchant_3.items.create!(name: "paper towel", description: "single extra adsorpbant", status: 1, unit_price: 299)
+      item_4 = merchant_3.items.create!(name: "disposible napkins", description: "1000 ct pre-folded unbleached", status: 1, unit_price: 1099)
 
-        @customer1 = Customer.create!(first_name: "Customer", last_name: "One")
+      customer_1 = Customer.create!(first_name:"Markus", last_name: "Vance")
 
-        @invoice1 = @customer1.invoices.create!(status: 2)
-        @invoice2 = @customer1.invoices.create!(status: 2)
-        @invoice3 = @customer1.invoices.create!(status: 2)
-        @invoice4 = @customer1.invoices.create!(status: 2)
-        @invoice5 = @customer1.invoices.create!(status: 2)
-        @invoice6 = @customer1.invoices.create!(status: 2)
+      invoice_1 = customer_1.invoices.create!(status: 1)
+      invoice_2 = customer_1.invoices.create!(status: 1)
+      invoice_3 = customer_1.invoices.create!(status: 1)
 
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice1.id, item_id: @item1.id, quantity: 5, unit_price: 200, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice2.id, item_id: @item2.id, quantity: 5, unit_price: 800, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice2.id, item_id: @item3.id, quantity: 5, unit_price: 500, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice3.id, item_id: @item4.id, quantity: 5, unit_price: 300, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice4.id, item_id: @item5.id, quantity: 5, unit_price: 500, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice5.id, item_id: @item6.id, quantity: 10, unit_price: 500, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice5.id, item_id: @item7.id, quantity: 10, unit_price: 500, status: 1)
-        @ii1 = InvoiceItem.create!(invoice_id: @invoice6.id, item_id: @item8.id, quantity: 1, unit_price: 100, status: 1)
+      invoice_item_1 = InvoiceItem.create!(invoice_id: invoice_1.id, item_id: item_1.id, quantity: 5, unit_price: 100, status: 0)
+      invoice_item_2 = InvoiceItem.create!(invoice_id: invoice_2.id, item_id: item_2.id, quantity: 5, unit_price: 100, status: 1)
+      invoice_item_3 = InvoiceItem.create!(invoice_id: invoice_3.id, item_id: item_3.id, quantity: 5, unit_price: 100, status: 2)
 
-        @transaction1 = Transaction.create!(credit_card_number: 203942, result: 'success', invoice_id: @invoice1.id)
-        @transaction2 = Transaction.create!(credit_card_number: 230948, result: 'success', invoice_id: @invoice2.id)
-        @transaction3 = Transaction.create!(credit_card_number: 234092, result: 'success', invoice_id: @invoice3.id)
-        @transaction4 = Transaction.create!(credit_card_number: 230429, result: 'success', invoice_id: @invoice4.id)
-        @transaction5 = Transaction.create!(credit_card_number: 102938, result: 'failed', invoice_id: @invoice5.id)
-        @transaction6 = Transaction.create!(credit_card_number: 879799, result: 'success', invoice_id: @invoice6.id)
-      end
-      it '#top_5_merchants returns based on total rev' do
-        expect(Merchant.top_5_merchants).to eq([@merchant2, @merchant4, @merchant3, @merchant1, @merchant6])
-      end
+      transaction_1 = invoice_1.transactions.create!(credit_card_number: 123456, result: "success")
+      transaction_2 = invoice_2.transactions.create!(credit_card_number: 223456, result: "success")
+      transaction_3 = invoice_2.transactions.create!(credit_card_number: 323456, result: "failed")
+      transaction_4 = invoice_3.transactions.create!(credit_card_number: 423456, result: "failed")
+
+      # invoices 1 and 2 should count, invoice 3 should not since it has no successful transactions
+
+      actual = merchant_3.total_rev
+      expect(actual).to eq(1000)
     end
+  end
+
+  describe 'class methods' do
+    before :each do
+      @merchant1 = Merchant.create!(name: "Pabu")
+      @merchant2 = Merchant.create!(name: "Loki")
+      @merchant3 = Merchant.create!(name: "Thor")
+      @merchant4 = Merchant.create!(name: "Ian")
+      @merchant5 = Merchant.create!(name: "Joe")
+      @merchant6 = Merchant.create!(name: "John")
+
+      @item1 = @merchant1.items.create!(name: "Comic", description: "Spider-Man", unit_price: 200, status: 1)
+      @item2 = @merchant2.items.create!(name: "Action figure", description: "Deku", unit_price: 800, status: 1)
+      @item3 = @merchant2.items.create!(name: "One Piece", description: "Rare", unit_price: 500, status: 1)
+      @item4 = @merchant3.items.create!(name: "Hunter card", description: "Useful", unit_price: 300, status: 1)
+      @item5 = @merchant4.items.create!(name: "Kunai", description: "Minatos", unit_price: 100, status: 1)
+      @item6 = @merchant5.items.create!(name: "ODM gear", description: "Advance technology", unit_price: 300, status: 1)
+      @item7 = @merchant5.items.create!(name: "Zenitsu", description: "Awsome sword", unit_price: 500, status: 1)
+      @item8 = @merchant6.items.create!(name: "Elucidator", description: "Kiritos sword", unit_price: 10, status: 1)
+
+      @customer1 = Customer.create!(first_name: "Customer", last_name: "One")
+
+      @invoice1 = @customer1.invoices.create!(status: 2)
+      @invoice2 = @customer1.invoices.create!(status: 2)
+      @invoice3 = @customer1.invoices.create!(status: 2)
+      @invoice4 = @customer1.invoices.create!(status: 2)
+      @invoice5 = @customer1.invoices.create!(status: 2)
+      @invoice6 = @customer1.invoices.create!(status: 2)
+
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice1.id, item_id: @item1.id, quantity: 5, unit_price: 200, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice2.id, item_id: @item2.id, quantity: 5, unit_price: 800, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice2.id, item_id: @item3.id, quantity: 5, unit_price: 500, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice3.id, item_id: @item4.id, quantity: 5, unit_price: 300, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice4.id, item_id: @item5.id, quantity: 5, unit_price: 500, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice5.id, item_id: @item6.id, quantity: 10, unit_price: 500, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice5.id, item_id: @item7.id, quantity: 10, unit_price: 500, status: 1)
+      @ii1 = InvoiceItem.create!(invoice_id: @invoice6.id, item_id: @item8.id, quantity: 1, unit_price: 100, status: 1)
+
+      @transaction1 = Transaction.create!(credit_card_number: 203942, result: 'success', invoice_id: @invoice1.id)
+      @transaction2 = Transaction.create!(credit_card_number: 230948, result: 'success', invoice_id: @invoice2.id)
+      @transaction3 = Transaction.create!(credit_card_number: 234092, result: 'success', invoice_id: @invoice3.id)
+      @transaction4 = Transaction.create!(credit_card_number: 230429, result: 'success', invoice_id: @invoice4.id)
+      @transaction5 = Transaction.create!(credit_card_number: 102938, result: 'failed', invoice_id: @invoice5.id)
+      @transaction6 = Transaction.create!(credit_card_number: 879799, result: 'success', invoice_id: @invoice6.id)
+    end
+
+    it '#top_5_merchants returns based on total rev' do
+      expect(Merchant.top_5_merchants).to eq([@merchant2, @merchant4, @merchant3, @merchant1, @merchant6])
+    end
+
   end
 end

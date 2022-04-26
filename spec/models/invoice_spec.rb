@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'time'
 
 RSpec.describe Invoice, type: :model do
   describe "validations" do
@@ -24,8 +25,16 @@ RSpec.describe Invoice, type: :model do
       @ii1 = InvoiceItem.create!(invoice_id: @invoice1.id, item_id: @item1.id, status: 1, quantity: 20, unit_price: 10)
       @ii2 = InvoiceItem.create!(invoice_id: @invoice1.id, item_id: @item2.id, status: 1, quantity: 5, unit_price: 12)
     end
+
     it "returns total revenue from all items in invoice" do
       expect(@invoice1.total_rev).to eq(260)
+    end
+
+
+    it "#format_time returns date time as 'Weekday, Month Day##, Year####'" do
+      customer = Customer.create!(last_name:"Ross", first_name:"Bob")
+      invoice = customer.invoices.create(status: 1, created_at: Time.parse("2022.04.25"))
+      expect(invoice.format_time).to eq( "Monday, April 25, 2022")
     end
   end
 end
