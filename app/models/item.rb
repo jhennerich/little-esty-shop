@@ -28,6 +28,7 @@ class Item < ApplicationRecord
         max << {"#{date}" => sum}
       end
     end
+    # binding.pry
     max.sort!{ |a,b| a.keys.first <=> b.keys.first }
     Time.parse(max.last.keys.first).strftime("%Y.%m.%d")
   end
