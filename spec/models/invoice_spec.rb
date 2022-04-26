@@ -37,4 +37,15 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.format_time).to eq( "Monday, April 25, 2022")
     end
   end
+
+  describe 'class methods' do
+    it "'::pending_invoices' returns invoices that are still pending status" do
+      customer = Customer.create!(last_name:"Ross", first_name:"Bob")
+      invoice1 = customer.invoices.create(status: 1, created_at: Time.parse("2022.04.25"))
+      invoice2 = customer.invoices.create(status: 2)
+      invoice3 = customer.invoices.create(status: 0)
+      expect(customer.invoices.pending_invoices).to eq([invoice3])
+    end
+
+  end
 end
