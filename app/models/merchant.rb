@@ -26,17 +26,22 @@ class Merchant < ApplicationRecord
   end
 
   def best_date_by_revenue
-    invoices.joins(:transactions)
+    invoice_sums = invoices.joins(:transactions)
     .where('transactions.result = ?', 'success')
     .where(status: "completed")
     .select('invoices.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
     .group('invoices.id')
     .order('revenue DESC, invoices.created_at')
+    sums_by_date = Hash.new(0)
+    invoice_sums.each { |invoice| sums_by_date[invoice.created_at.strftime("%Y.%m.%d")] += invoice.revenue}
+    max = {"0000.01.01" => 0}
+    sums_by_date.each_pair { |date, sum| max = {date => sum} if sum > max.values[0] || (sum == date && Time.parse(date) > Time.parse(max.keys[0])) }
+    return max
   end
 
   def best_date_formatted
-    if best_date_by_revenue.empty? == false
-      return best_date_by_revenue.first.created_at.strftime("%A, %B %d %Y")
+    if best_date_by_revenue.values.first != 0
+      return best_date_by_revenue.keys.first.strftime("%A, %B %d %Y")
     else
       return "No sales data"
     end
