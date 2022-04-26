@@ -19,6 +19,24 @@ class MerchantDiscountsController < ApplicationController
     redirect_to "/merchants/#{params[:merchant_id]}/bulk_discounts/"
   end
 
+  def show
+    @merchant = Merchant.find(params[:merchant_id])
+  end
+
+  def edit
+    @merchant = Merchant.find(params[:merchant_id])
+  end
+
+  def update
+    discount = BulkDiscount.find(params[:id])
+    if discount.update(discount_params)
+      redirect_to "/merchants/#{params[:merchant_id]}/bulk_discounts/#{params[:id]}/"
+    else
+      flash[:notice] = "Discount not updated: at least one missing field required"
+      redirect_to "/merchants/#{params[:merchant_id]}/bulk_discounts/#{params[:id]}/edit/"
+    end
+  end
+
   private
 
   def discount_params

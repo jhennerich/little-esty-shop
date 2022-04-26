@@ -63,4 +63,11 @@ class Merchant < ApplicationRecord
     .where("transactions.result = 'success'")
     .sum("invoice_items.unit_price * invoice_items.quantity")
   end
+
+  def find_discount(discount_id)
+    discount = BulkDiscount.find(discount_id)
+    if discount.merchant_id == self.id
+      return discount
+    end
+  end
 end

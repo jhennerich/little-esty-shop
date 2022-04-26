@@ -147,6 +147,15 @@ RSpec.describe Merchant, type: :model do
 
       expect(merchant_3.best_date_formatted).to eq("Thursday, May 07 2020")
     end
+
+    it '#find_discount returns discount information if owned by merchant' do
+      merchant1 = Merchant.create!(name: "Bell Burrito")
+      discount1 = merchant1.bulk_discounts.create!(threshold: 40, discount: 10)
+      merchant2 = Merchant.create!(name: "Guac Jock Sports Tacos")
+      discount2 = merchant2.bulk_discounts.create!(threshold: 20, discount: 3)
+      expect(merchant1.find_discount(discount1.id)).to eq(discount1)
+      expect(merchant1.find_discount(discount2.id)).to eq(nil)
+    end
   end
 
   describe 'class methods' do
