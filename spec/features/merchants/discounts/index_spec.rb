@@ -4,8 +4,8 @@ RSpec.describe "merchants discounts index page" do
 
   it "links from the merchant's dashboard" do
     merchant_1 = Merchant.create!(name: "General Paper Inc")
-    discount_1 = merchant_1.bulk_discounts.create!(threshold: 12, discount: 0.05)
-    discount_1 = merchant_1.bulk_discounts.create!(threshold: 50, discount: 0.1)
+    discount_1 = merchant_1.bulk_discounts.create!(threshold: 12, discount: 5.0)
+    discount_1 = merchant_1.bulk_discounts.create!(threshold: 50, discount: 10.0)
 
     visit "/merchants/#{merchant_1.id}/dashboard/"
     click_on "View My Discounts"
