@@ -10,9 +10,9 @@ RSpec.describe "merchants discounts index page" do
     visit "/merchants/#{merchant_1.id}/dashboard/"
     click_on "View My Discounts"
 
-    expect(current_path).to be("/merchants/#{merchant_1.id}/discounts/")
-    expect(page).to have_content("5% when a customer buys 12 or more items")
-    expect(page).to have_content("10% when a customer buys 50 or more items")
+    expect(current_path).to eq("/merchants/#{merchant_1.id}/bulk_discounts")
+    expect(page).to have_content("5.0% when a customer buys 12 or more items")
+    expect(page).to have_content("10.0% when a customer buys 50 or more items")
   end
 
 end
