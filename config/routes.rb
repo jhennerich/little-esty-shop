@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :dashboard, controller: 'merchant_dashboard', only: [:index]
     resources :items, controller: 'merchant_items'
     resources :invoices, controller: 'merchant_invoices', only: [:index, :show, :update]
+    resources :bulk_discounts, controller: 'merchant_discounts', only:[:index]
   end
 
   get '/admin', to: 'admin#index'
