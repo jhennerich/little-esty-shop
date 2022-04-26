@@ -16,10 +16,12 @@ RSpec.describe 'Merchants discounts edit' do
     expect(page).to have_field(:threshold, with: 12)
 
     fill_in :discount, with: 10.5
+    fill_in :threshhold, with: 20
     click_on "Update Discount"
 
     expect(current_path.to eq("/merchants/#{merchant_1.id}/bulk_discounts/#{discount_1.id}"))
     expect(page).to have_contents("Discount: 10.5% off item's unit price")
+    expect(page).not_to have_content("Threshold: 20 or more items")
   end
 
 end
