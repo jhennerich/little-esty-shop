@@ -68,8 +68,6 @@ class Merchant < ApplicationRecord
     discount = BulkDiscount.find(discount_id)
     if discount.merchant_id == self.id
       return discount
-    else
-      return "error: no such discount belonging to merchant"
     end
   end
 end

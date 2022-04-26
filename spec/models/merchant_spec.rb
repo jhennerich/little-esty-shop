@@ -154,7 +154,7 @@ RSpec.describe Merchant, type: :model do
       merchant2 = Merchant.create!(name: "Guac Jock Sports Tacos")
       discount2 = merchant2.bulk_discounts.create!(threshold: 20, discount: 3)
       expect(merchant1.find_discount(discount1.id)).to eq(discount1)
-      expect(merchant1.find_discount(discount2.id)).to eq("error: no such discount belonging to merchant")
+      expect(merchant1.find_discount(discount2.id)).to eq(nil)
     end
   end
 
