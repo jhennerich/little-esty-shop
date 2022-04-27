@@ -15,7 +15,7 @@
       <tr>
         <td><strong>Quantity: </strong><%= invoice_item.quantity %></td><br>
         <td><strong>Price: </strong><%= invoice_item.unit_price %></td><br>
-        <td><strong>Invoice item status: <%= invoice_item.status %></strong><br>
+        <td><strong>Invoice item status: </strong><%= invoice_item.status %><br>
 
         <%= form_with url: merchant_invoice_path(item.merchant_id, @invoice.id), method: :patch, local: true do |form| %>
         <%= form.hidden_field :invoice_item_id, value: invoice_item.id %>
@@ -24,6 +24,11 @@
 
         <%= form.submit "Update Item Status" , selected: invoice_item.status %>
         <% end %></td>
+        <td>
+          <% if invoice_item.get_discount %>
+          <%= button_to "View Applied Discounts", "/merchants/#{params[:merchant_id]}/bulk_discounts/#{invoice_item.get_discount.id}", method: :get%>
+          <% end %>
+        </td>
       </tr>
     </div>
   <% end %>

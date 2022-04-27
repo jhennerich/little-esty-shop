@@ -77,4 +77,16 @@ RSpec.describe 'merchant dashboard' do
       expect(page).to have_content("$2.00")
     end
   end
+
+  it 'shows a link to applied discounts (if applicable) by each item' do
+    discount = @merchant1.bulk_discounts.create!(threshold: 10, discount: 50)
+    visit merchant_invoice_path(@merchant1, @invoice1)
+    within("#invoice-item-#{@ii2.id}") do
+      expect(page).not_to have_button("View Applied Discounts")
+    end
+    within("#invoice-item-#{@ii1.id}") do
+      click_on "View Applied Discounts"
+    end
+    expect(current_path).to eq("/merchants/#{@merchant1.id}/bulk_discounts/#{discount.id}/")
+  end
 end
