@@ -1,6 +1,14 @@
 <h1>Invoices index</h1>
 <div id="invoices">
+  <table>
   <% @invoices.each do |invoice| %>
-    <p><%= link_to "#{invoice.id}", merchant_invoice_path(@merchant, invoice) %></p>
+  <tr>
+  <div id="invoice<%=invoice.id%>">
+    <td><%= link_to "#{invoice.id}", merchant_invoice_path(@merchant, invoice) %></<td>
+    <td><%= number_to_currency(invoice.total_rev/100) %></td>
+    <td><%= number_to_currency(invoice.discounted_rev/100) %></td>
+  </div>
+  </tr>
   <% end %>
+  </table>
 </div>
