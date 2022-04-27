@@ -23,4 +23,16 @@ class Invoice < ApplicationRecord
   def total_rev
     invoice_items.sum("quantity * unit_price")
   end
+
+  def discounted_rev
+    sum = 0.0
+    all_discounts = BulkDiscount.all.order(:discount)
+    invoice_items.each do |invoice_item|
+      item_discount = 0.0
+      all_discounts.each { |merchant_discount|item_discount = merchant_discount.discount if merchant_discount.threshold <= invoice_item.quantity}
+      discounted_item_total = (1-(item_discount/100)) * invoice_item.quantity * invoice_item.unit_price
+      sum += discounted_item_total
+    end
+    return sum
+  end
 end

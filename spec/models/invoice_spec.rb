@@ -36,6 +36,11 @@ RSpec.describe Invoice, type: :model do
       invoice = customer.invoices.create(status: 1, created_at: Time.parse("2022.04.25"))
       expect(invoice.format_time).to eq( "Monday, April 25, 2022")
     end
+
+    it "returns bulk-discounted revenue for an invoice" do
+      discount = @merchant1.bulk_discounts.create!(discount: 15, threshold: 10)
+      expect(@invoice1.discounted_rev).to eq(230)
+    end
   end
 
   describe 'class methods' do
