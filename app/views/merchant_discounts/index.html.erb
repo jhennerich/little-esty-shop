@@ -4,13 +4,17 @@
 </div>
 
 <div id="merchant-discounts-index-discount-display">
-  <ul>
+  <table>
     <% if @merchant.bulk_discounts.count != 0 %>
       <% @merchant.bulk_discounts.each do |discount| %>
+      <tr>
         <div id ="merchant-discounts-index-discount-<%= discount.id %>">
-          <li><%= discount.discount  %>% when a customer buys <%= discount.threshold %> or more items <%= button_to "Delete Discount", "/merchants/#{@merchant.id}/bulk_discounts/#{discount.id}/", method: :delete, display: :inline %></li>
+          <td><%= discount.discount  %>% when a customer buys <%= discount.threshold %> or more items</td>
+          <td> <%= button_to "Delete Discount", "/merchants/#{@merchant.id}/bulk_discounts/#{discount.id}/", method: :delete %></td>
+          <td> <%= button_to "View Discount Details", "/merchants/#{@merchant.id}/bulk_discounts/#{discount.id}/", method: :get %></td>
         </div>
+      </tr>
       <% end %>
     <% end %>
-  </ul>
+  </table>
 </div>
