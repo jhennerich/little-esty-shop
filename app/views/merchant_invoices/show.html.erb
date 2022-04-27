@@ -26,7 +26,7 @@
         <% end %></td>
         <td>
           <% if invoice_item.get_discount %>
-          <%= button_to "View Applied Discounts", "/merchants/#{params[:merchant_id]}/bulk_discounts/#{invoice_item.get_discount.id}", method: :get%>
+          <%= button_to "View Applied Discounts", "/merchants/#{params[:merchant_id]}/bulk_discounts/#{invoice_item.get_discount.id}/", method: :get%>
           <% end %>
         </td>
       </tr>
