@@ -1,6 +1,11 @@
 <h1>Invoices index</h1>
 <div id="invoices">
   <table>
+    <tr>
+      <th>Invoice</th>
+      <th>Revenue Before Discounts</th>
+      <th>Revenue After Discounts</th>
+    </tr>
   <% @invoices.each do |invoice| %>
   <tr>
   <div id="invoice<%=invoice.id%>">

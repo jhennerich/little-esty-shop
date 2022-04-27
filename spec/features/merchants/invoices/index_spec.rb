@@ -45,7 +45,6 @@ RSpec.describe 'merchant dashboard' do
     discount1 = @merchant1.bulk_discounts.create!(threshold: 15, discount: 10)
     discount2 = @merchant1.bulk_discounts.create!(threshold: 25, discount: 20)
     visit merchant_invoices_path(@merchant1)
-
     within("#invoice#{@invoice1.id}") do
       expect(page).to have_content("$2.00")
       expect(page).to have_content("$1.80")
