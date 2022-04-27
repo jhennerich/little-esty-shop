@@ -71,6 +71,17 @@ RSpec.describe 'Admin invoice show page' do
     expect(page).to have_content("Total revenue generated: $4.00")
   end
 
+  it 'shows discounted revenue for the invoice' do
+    @invoiceitem1.update(quantity: 10)
+    @invoiceitem2.update(quantity: 3)
+    discount1 = @starw.bulk_discounts.create!(threshold: 3, discount: 5)
+    discount2 = @starw.bulk_discounts.create!(threshold: 10, discount: 10)
+
+    visit "/admin/invoices/#{@invoice1.id}"
+
+    expect(page).to have_content("Total revenue less discounts: $11.85")
+  end
+
   it 'shows the invoice status as a select field that is editable, with a submit button' do
     expected = find_field(:update_status).value
 
