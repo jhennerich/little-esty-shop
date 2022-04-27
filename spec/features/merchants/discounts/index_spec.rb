@@ -13,6 +13,12 @@ RSpec.describe "merchants discounts index page" do
     expect(current_path).to eq("/merchants/#{merchant_1.id}/bulk_discounts")
     expect(page).to have_content("5.0% when a customer buys 12 or more items")
     expect(page).to have_content("10.0% when a customer buys 50 or more items")
+
+    within("#merchant-discounts-index-discount-#{discount_1.id}") do
+      click_on "View Discount Details"
+    end
+
+    expect(current_path).to eq("/merchants/#{merchant_1.id}/bulk_discounts/#{discount_1.id}/")
   end
 
   it 'provides buttons to delete discounts individually' do
